@@ -1,99 +1,90 @@
 package com.calctax.tax_calculation_api.services;
 
-import com.calctax.tax_calculation_api.dtos.LoginUserDTO;
-import com.calctax.tax_calculation_api.dtos.RegisterUserDTO;
-import com.calctax.tax_calculation_api.dtos.ResponseUserDTO;
+import com.calctax.tax_calculation_api.dtos.*;
 import com.calctax.tax_calculation_api.exceptions.DuplicateException;
-import com.calctax.tax_calculation_api.exceptions.InvalidException;
 import com.calctax.tax_calculation_api.exceptions.NotFoundException;
-import com.calctax.tax_calculation_api.infra.security.JwtUtil;
-import com.calctax.tax_calculation_api.models.Role;
-import com.calctax.tax_calculation_api.models.User;
-import com.calctax.tax_calculation_api.repositories.RoleRepository;
-import com.calctax.tax_calculation_api.repositories.UserRepository;
+import com.calctax.tax_calculation_api.infra.JwtUtil;
+import com.calctax.tax_calculation_api.models.Tax;
+import com.calctax.tax_calculation_api.repositories.TaxRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class UserServicesImpl implements UserServices, UserDetailsService {
-    private final RoleRepository roleRepository;
-    private final UserRepository userRepository;
+public class TaxServicesImpl implements TaxServices {
+    private final TaxRepository taxRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtUtil jwtUtil;
 
-    private final Map<String, String> userToken = new HashMap<>();
-
-    public ResponseUserDTO registerUser(RegisterUserDTO registerUserDTO) {
-        String username = registerUserDTO.getUsername();
-        if (userRepository.existsByUsername(username)){
-            throw new DuplicateException("Já existe um usuário com este nome" + username);
+    public ResponseTaxDTO registerTax(RegisterTaxDTO registerTaxDTO){
+        String taxName = registerTaxDTO.getName();
+        if (taxRepository.existsByTaxName(taxName)){
+            throw new DuplicateException("Essa taxa já existe: " +taxName);
         }
 
-        String encodedPassword = bCryptPasswordEncoder.encode(registerUserDTO.getPassword());
+        Tax tax = new Tax(taxName, registerTaxDTO.getDescription(), registerTaxDTO.getBaseValue(), registerTaxDTO.getAliquot());
+        Tax registeredTax = taxRepository.save(tax);
 
-        Set<Role> roles = registerUserDTO.getRoles().stream()
-                .map(roleName -> roleRepository.findByName(roleName)
-                        .orElseThrow(() -> new NotFoundException("Está role não existe " +roleName))).collect(Collectors.toSet());
-
-        User user = new User(username, encodedPassword, roles);
-        User registeredUser = userRepository.save(user);
-
-        String token = jwtUtil.generateToken(user.getRoles().stream()
-                .map(role -> role.getName().toString()).collect(Collectors.toList()), user.getUsername());
-
-        userToken.put(username, token);
-
-        return new ResponseUserDTO(
-                registeredUser.getId(),
-                registeredUser.getUsername(),
-                registeredUser.getRoles()
+        return new ResponseTaxDTO(
+                registeredTax.getTaxId(),
+                registeredTax.getTaxName(),
+                registeredTax.getDescription(),
+                registeredTax.getBaseValue(),
+                registeredTax.getAliquot()
         );
     }
-    public String getUserToken(String username){
-        return userToken.get(username);
+    public ResponseTaxDTO getTaxById(Long taxId){
+        Tax taxFoundById = taxRepository.findTaxByTaxId(taxId)
+                .orElseThrow(() -> new NotFoundException("O imposto com o id "+taxId+" não foi encontrado."));
+
+        return new ResponseTaxDTO(
+                taxFoundById.getTaxId(),
+                taxFoundById.getTaxName(),
+                taxFoundById.getDescription(),
+                taxFoundById.getBaseValue(),
+                taxFoundById.getAliquot()
+        );
     }
 
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado " +username));
+    public CalculatedTaxDTO calculatedTax(ResponseTaxDTO responseTaxDTO){
+        BigDecimal baseValue = responseTaxDTO.getBaseValue();
+        BigDecimal aliquot = responseTaxDTO.getAliquot();
 
-        String token = userToken.get(username);
-        if (token == null || !jwtUtil.validateToken(token)) {
-            throw new BadCredentialsException("Token inválido ou expirado");
-        }
-        List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
-                .collect(Collectors.toList());
+        BigDecimal calculatedValue = baseValue.multiply(aliquot).divide(BigDecimal.valueOf(100));
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
-        }
+        CalculatedTaxDTO finalValue = new CalculatedTaxDTO();
 
-        public String loginUser(LoginUserDTO loginUserDTO){
-            Optional<User> optionalUser = userRepository.findByUsername(loginUserDTO.getUsername());
-            if (!optionalUser.isPresent()){
-                throw new NotFoundException("Usuáaio não encontrado");
-            }
-            User user = optionalUser.get();
+        finalValue.setName(responseTaxDTO.getName());
+        finalValue.setBaseValue(responseTaxDTO.getBaseValue());
+        finalValue.setAliquot(responseTaxDTO.getAliquot());
+        finalValue.setCalculatedValue(calculatedValue);
 
-            if(!bCryptPasswordEncoder.matches(loginUserDTO.getPassword(), user.getPassword())){
-                throw new InvalidException("Senha inválida.");
-            }
+        return finalValue;
+    }
 
-            List<String> roles = user.getRoles().stream()
-                    .map(role -> role.getName().name())
-                    .collect(Collectors.toList());
+    public List<ResponseTaxDTO> getAllTaxes(){
+        return taxRepository.findAll().stream()
+                .map(tax -> new ResponseTaxDTO(
+                        tax.getTaxId(),
+                        tax.getTaxName(),
+                        tax.getDescription(),
+                        tax.getBaseValue(),
+                        tax.getAliquot()
+                )).collect(Collectors.toList());
+    }
 
-            return jwtUtil.generateToken(roles, user.getUsername());
-        }
+    public void deleteTaxById(Long taxId){
+      try {
+          Tax existingTax = taxRepository.findTaxByTaxId(taxId)
+                  .orElseThrow(() -> new NotFoundException("Não existe imposto com esse id!"));
+          taxRepository.deleteById(taxId);
+      } catch (NotFoundException e){
+          System.out.println(e.toString());
+      }
+    }
     }
