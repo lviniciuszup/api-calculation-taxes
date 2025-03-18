@@ -1,4 +1,4 @@
-package com.calctax.tax_calculation_api.infra.security;
+package com.calctax.tax_calculation_api.infra;
 
 
 import io.jsonwebtoken.Claims;
@@ -29,7 +29,6 @@ public class JwtUtil {
                 .setExpiration(new Date(System.currentTimeMillis() + 10 * 60 * 60 * 1000)) // Expiração do Token em 10 horas
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
                 .compact();
-
     }
 
     public Claims extractAllClaims(String token){
