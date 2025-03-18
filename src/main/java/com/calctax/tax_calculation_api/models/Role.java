@@ -1,5 +1,6 @@
 package com.calctax.tax_calculation_api.models;
 
+import com.calctax.tax_calculation_api.dtos.RoleName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,5 +16,6 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Enumerated(EnumType.STRING)
-    private String name;
+    @Column(nullable = false, unique = true)
+    private RoleName name;
 }
