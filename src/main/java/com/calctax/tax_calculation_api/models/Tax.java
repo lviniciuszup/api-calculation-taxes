@@ -15,8 +15,15 @@ import java.math.BigDecimal;
 public class Tax {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
+    private Long taxId;
+    @Column(nullable = false, unique = true)
+    private String taxName;
     private String description;
+    @Column(nullable = false)
+    private BigDecimal baseValue;
+    @Column(nullable = false)
     private BigDecimal aliquot;
+
+    public Tax(String taxName, String description, BigDecimal baseValue, BigDecimal aliquot) {}
 }
+
