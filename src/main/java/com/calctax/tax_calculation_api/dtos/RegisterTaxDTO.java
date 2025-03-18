@@ -10,13 +10,16 @@ import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
-public class RequestCalculationTaxDTO {
+public class RegisterTaxDTO {
 
-    @NotEmpty(message = "Name cannot be empty")
+    @NotEmpty(message = "Nome não pode ser vázio")
     private String name;
-    @NotEmpty(message = "Description cannot be empty")
+    @NotEmpty(message = "Descrição não pode se vázia")
     private String description;
-    @NotNull(message = "Aliquota cannot be null")
+    @NotNull(message = "Aliquota não pode ser nulo")
     @DecimalMin(value = "0.0", inclusive = false, message = "A Alíquota precisa ser maior que zero")
     private BigDecimal aliquot;
+    @NotNull(message = "O valor base não pode ser nulo")
+    @DecimalMin(value = "0.0", inclusive = false, message = "O valor base precisa ser maior que zero")
+    private BigDecimal baseValue;
 }
