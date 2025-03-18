@@ -7,9 +7,10 @@ import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
-public class ResponseCalculationTaxDTO {
-    private Long id;
+public class ResponseTaxDTO {
+    private Long taxId;
     private String name;
     private String description;
+    private BigDecimal baseValue;
     private BigDecimal aliquot;
 }
