@@ -10,13 +10,9 @@ import java.math.BigDecimal;
 @Data
 public class TaxDTO {
 
-    @NotEmpty(message = "Name cannot be empty")
     private String name;
-
-    @NotEmpty(message = "Description cannot be empty")
     private String description;
-
-    @NotNull(message = "Aliquota cannot be null")
-    @DecimalMin(value = "0.0", inclusive = false, message = "A Alíquota precisa ser maior que zero")
+    private BigDecimal baseValue;
     private BigDecimal aliquot;
+    private BigDecimal calculatedValue;
 }
