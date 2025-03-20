@@ -19,11 +19,15 @@ public class Tax {
     @Column(nullable = false, unique = true)
     private String taxName;
     private String description;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private BigDecimal baseValue;
     @Column(nullable = false)
     private BigDecimal aliquot;
 
-    public Tax(String taxName, String description, BigDecimal baseValue, BigDecimal aliquot) {}
+    public Tax(String taxName, String description, BigDecimal aliquot) {
+        this.taxName = taxName;
+        this.description = description;
+        this.aliquot = aliquot;
+    }
 }
 
