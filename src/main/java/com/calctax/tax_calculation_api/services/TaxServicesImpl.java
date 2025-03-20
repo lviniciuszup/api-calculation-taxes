@@ -27,14 +27,14 @@ public class TaxServicesImpl implements TaxServices {
             throw new DuplicateException("Essa taxa já existe: " +taxName);
         }
 
-        Tax tax = new Tax(taxName, registerTaxDTO.getDescription(), registerTaxDTO.getBaseValue(), registerTaxDTO.getAliquot());
+        Tax tax = new Tax(taxName, registerTaxDTO.getDescription(), registerTaxDTO.getAliquot());
+
         Tax registeredTax = taxRepository.save(tax);
 
         return new ResponseTaxDTO(
                 registeredTax.getTaxId(),
                 registeredTax.getTaxName(),
                 registeredTax.getDescription(),
-                registeredTax.getBaseValue(),
                 registeredTax.getAliquot()
         );
     }
@@ -46,22 +46,28 @@ public class TaxServicesImpl implements TaxServices {
                 taxFoundById.getTaxId(),
                 taxFoundById.getTaxName(),
                 taxFoundById.getDescription(),
-                taxFoundById.getBaseValue(),
                 taxFoundById.getAliquot()
         );
     }
 
-    public CalculatedTaxDTO calculatedTax(ResponseTaxDTO responseTaxDTO){
-        BigDecimal baseValue = responseTaxDTO.getBaseValue();
-        BigDecimal aliquot = responseTaxDTO.getAliquot();
+    public CalculatedTaxDTO calculatedTax(RequestForCalculatedTaxDTO requestForCalculatedTaxDTO){
+        Long taxId = requestForCalculatedTaxDTO.getTaxId();
+        Optional<Tax> taxOpt = taxRepository.findTaxByTaxId(taxId);
+        if (!taxOpt.isPresent()){
+            throw new NotFoundException("Imposto não encontrado para o ID "+taxId+" fornecido!");
+        }
+        Tax tax = taxOpt.get();
 
+
+
+        BigDecimal baseValue = requestForCalculatedTaxDTO.getBaseValue();
+        BigDecimal aliquot = tax.getAliquot();
         BigDecimal calculatedValue = baseValue.multiply(aliquot).divide(BigDecimal.valueOf(100));
 
         CalculatedTaxDTO finalValue = new CalculatedTaxDTO();
-
-        finalValue.setName(responseTaxDTO.getName());
-        finalValue.setBaseValue(responseTaxDTO.getBaseValue());
-        finalValue.setAliquot(responseTaxDTO.getAliquot());
+        finalValue.setName(tax.getTaxName());
+        finalValue.setBaseValue(baseValue);
+        finalValue.setAliquot(aliquot);
         finalValue.setCalculatedValue(calculatedValue);
 
         return finalValue;
@@ -73,18 +79,14 @@ public class TaxServicesImpl implements TaxServices {
                         tax.getTaxId(),
                         tax.getTaxName(),
                         tax.getDescription(),
-                        tax.getBaseValue(),
                         tax.getAliquot()
                 )).collect(Collectors.toList());
     }
 
     public void deleteTaxById(Long taxId){
-      try {
           Tax existingTax = taxRepository.findTaxByTaxId(taxId)
                   .orElseThrow(() -> new NotFoundException("Não existe imposto com esse id!"));
-          taxRepository.deleteById(taxId);
-      } catch (NotFoundException e){
-          System.out.println(e.toString());
-      }
+
+          taxRepository.delete(existingTax);
     }
     }

@@ -42,18 +42,21 @@ public class UserServicesImpl implements UserServices, UserDetailsService {
 
         Set<Role> roles = registerUserDTO.getRoles().stream()
                 .map(roleNameString -> {
-                    RoleName roleName;
-                    try {
-                        roleName = RoleName.valueOf(roleNameString.toUpperCase());
-                    } catch (IllegalArgumentException e) {
-                        throw new NotFoundException("Esta role não existe: " + roleNameString);
-                    }
-                    return roleRepository.findByName(roleName)
-                            .orElseThrow(() -> new NotFoundException("Esta role não existe: " + roleNameString));
+                    String roleNameWithPrefix = roleNameString.toUpperCase().replace("ROLE_", "");
+
+                    Role role = new Role();
+                    role.setName(roleNameWithPrefix);
+                    if (!roleRepository.existsByName(roleNameWithPrefix)) {
+                        roleRepository.save(role);
+                   }
+
+                    return roleRepository.findByName(roleNameWithPrefix)
+                            .orElseThrow(() -> new NotFoundException("Esta role não encontrada: " + roleNameWithPrefix));
                 })
                 .collect(Collectors.toSet());
 
-        User user = new User(null, username, encodedPassword, roles);
+
+        User user = new User(username, encodedPassword, roles);
         User registeredUser = userRepository.save(user);
 
         return new ResponseUserDTO(
@@ -68,8 +71,7 @@ public class UserServicesImpl implements UserServices, UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado " +username));
 
         List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().name())).collect(Collectors.toList());
-
+                .map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
         }
 
@@ -84,7 +86,7 @@ public class UserServicesImpl implements UserServices, UserDetailsService {
                 throw new InvalidException("Senha inválida.");
             }
             List<String> roles = user.getRoles().stream()
-                    .map(role -> role.getName().name())
+                    .map(role -> role.getName())
                     .collect(Collectors.toList());
 
             return jwtUtil.createToken(roles, user.getUsername());

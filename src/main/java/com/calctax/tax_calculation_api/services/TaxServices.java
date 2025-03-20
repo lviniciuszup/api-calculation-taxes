@@ -7,7 +7,7 @@ import java.util.List;
 public interface TaxServices {
     ResponseTaxDTO registerTax(RegisterTaxDTO registerTaxDTO);
     ResponseTaxDTO getTaxById(Long id);
-    CalculatedTaxDTO calculatedTax(ResponseTaxDTO responseTaxDTO);
+    CalculatedTaxDTO calculatedTax(RequestForCalculatedTaxDTO responseForCalculatedTaxDTO);
     List<ResponseTaxDTO> getAllTaxes();
     void deleteTaxById(Long id);
 }
