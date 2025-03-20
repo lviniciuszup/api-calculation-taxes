@@ -19,7 +19,4 @@ public class RegisterTaxDTO {
     @NotNull(message = "Aliquota não pode ser nulo")
     @DecimalMin(value = "0.0", inclusive = false, message = "A Alíquota precisa ser maior que zero")
     private BigDecimal aliquot;
-    @NotNull(message = "O valor base não pode ser nulo")
-    @DecimalMin(value = "0.0", inclusive = false, message = "O valor base precisa ser maior que zero")
-    private BigDecimal baseValue;
 }

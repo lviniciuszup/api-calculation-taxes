@@ -4,11 +4,13 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class RegisterUserDTO {
     @NotEmpty(message = "O usuário não pode ser vázio")
     @Size(min = 3, max = 20, message = "Por favor, o nome de usuário precisa ter entre 3 e 20 caracteres" )
