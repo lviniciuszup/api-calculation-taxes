@@ -22,7 +22,7 @@ public class JwtUtil {
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", roles);
 
-         return Jwts.builder()
+        return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))

@@ -29,7 +29,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/user/register", "/api/user/login").permitAll()
+                        .requestMatchers("/user/register", "/user/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/tax/tipos", "/tax/calculo").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.GET,"/tax/tipos", "/tax/tipos/{id}").authenticated()
                         .requestMatchers(HttpMethod.DELETE,"/tax/tipos/{id}").hasAuthority("ADMIN").anyRequest().authenticated()
