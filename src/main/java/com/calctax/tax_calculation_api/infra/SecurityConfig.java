@@ -30,9 +30,9 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/user/register", "/user/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/tax/tipos", "/tax/calculo").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.GET,"/tax/tipos", "/tax/tipos/{id}").authenticated()
-                        .requestMatchers(HttpMethod.DELETE,"/tax/tipos/{id}").hasAuthority("ADMIN").anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.POST, "/taxes/tipos", "/taxes/calculo").permitAll() //.hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/taxes/tipos", "/taxes/tipos/{id}").permitAll() //.authenticated()
+                        .requestMatchers(HttpMethod.DELETE,"/taxes/tipos/{id}").permitAll().anyRequest().authenticated() //.hasAuthority("ADMIN")
                 );
         http.csrf(AbstractHttpConfigurer::disable);
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
