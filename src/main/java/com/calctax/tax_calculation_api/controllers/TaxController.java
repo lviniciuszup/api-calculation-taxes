@@ -2,6 +2,7 @@ package com.calctax.tax_calculation_api.controllers;
 
 import com.calctax.tax_calculation_api.dtos.CalculatedTaxDTO;
 import com.calctax.tax_calculation_api.dtos.RegisterTaxDTO;
+import com.calctax.tax_calculation_api.dtos.RequestForCalculatedTaxDTO;
 import com.calctax.tax_calculation_api.dtos.ResponseTaxDTO;
 import com.calctax.tax_calculation_api.services.TaxServices;
 import jakarta.validation.Valid;
@@ -14,23 +15,23 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/tax")
+@RequestMapping("/taxes")
 public class TaxController {
     private final TaxServices taxServices;
 
     @PostMapping("/tipos")
-    public ResponseEntity<ResponseTaxDTO> newTax(@RequestBody @Valid RegisterTaxDTO registerTaxDTO){
+    public ResponseEntity<ResponseTaxDTO> createTax(@RequestBody @Valid RegisterTaxDTO registerTaxDTO){
         ResponseTaxDTO createdTax = taxServices.registerTax(registerTaxDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTax);
     }
     @PostMapping("/calculo")
-    public ResponseEntity<CalculatedTaxDTO> finalValue(@RequestBody @Valid ResponseTaxDTO responseTaxDTO){
-        CalculatedTaxDTO finalValueTax = taxServices.calculatedTax(responseTaxDTO);
+    public ResponseEntity<CalculatedTaxDTO> calculateTax(@RequestBody @Valid RequestForCalculatedTaxDTO requestForCalculatedTaxDTO){
+        CalculatedTaxDTO finalValueTax = taxServices.calculatedTax(requestForCalculatedTaxDTO);
         return ResponseEntity.ok(finalValueTax);
     }
 
     @GetMapping("/tipos")
-    public ResponseEntity<List<ResponseTaxDTO>> listTaxes(){
+    public ResponseEntity<List<ResponseTaxDTO>> listAllTaxes(){
         List<ResponseTaxDTO> allTaxes = taxServices.getAllTaxes();
         return ResponseEntity.ok(allTaxes);
     }
