@@ -1,8 +1,12 @@
 package com.calctax.tax_calculation_api;
 
+import com.calctax.tax_calculation_api.dtos.RoleName;
+import com.calctax.tax_calculation_api.models.Role;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.util.Optional;
 
 @SpringBootApplication
 public class TaxCalculationApiApplication {
