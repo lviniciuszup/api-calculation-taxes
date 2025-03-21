@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,11 +26,13 @@ public class TaxController {
     }
 
     @PostMapping("/tipos")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseTaxDTO> createTax(@RequestBody @Valid RegisterTaxDTO registerTaxDTO){
         ResponseTaxDTO createdTax = taxServices.registerTax(registerTaxDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTax);
     }
     @PostMapping("/calculo")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CalculatedTaxDTO> calculateTax(@RequestBody @Valid RequestForCalculatedTaxDTO requestForCalculatedTaxDTO){
         CalculatedTaxDTO finalValueTax = taxServices.calculatedTax(requestForCalculatedTaxDTO);
         return ResponseEntity.ok(finalValueTax);
@@ -48,6 +51,7 @@ public class TaxController {
     }
 
     @DeleteMapping("/tipos/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteTaxById(@PathVariable("id") Long taxId){
         taxServices.deleteTaxById(taxId);
         return ResponseEntity.noContent().build();
