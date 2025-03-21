@@ -77,7 +77,7 @@ A autenticação é feita pelo **JWT**. Para acessar os endpoints, siga os passo
 - Resposta:
 ```json
 {
-"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+"token": "eyJhbGciOiJIUzI1NiIsbnhj89InR5clkmkljnklCI6IkpXVCJ9..."
 }
 ```
 3. Use o token JWT no cabeçalho das requisições:
