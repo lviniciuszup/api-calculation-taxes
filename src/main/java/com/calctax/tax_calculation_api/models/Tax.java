@@ -29,5 +29,45 @@ public class Tax {
         this.description = description;
         this.aliquot = aliquot;
     }
+
+    public String getTaxName() {
+        return taxName;
+    }
+
+    public void setTaxName(String taxName) {
+        this.taxName = taxName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public BigDecimal getBaseValue() {
+        return baseValue;
+    }
+
+    public void setBaseValue(BigDecimal baseValue) {
+        this.baseValue = baseValue;
+    }
+
+    public BigDecimal getAliquot() {
+        return aliquot;
+    }
+
+    public Long getTaxId() {
+        return taxId;
+    }
+
+    public void setTaxId(Long taxId) {
+        this.taxId = taxId;
+    }
+
+    public void setAliquot(BigDecimal aliquot) {
+        this.aliquot = aliquot;
+    }
 }
 
