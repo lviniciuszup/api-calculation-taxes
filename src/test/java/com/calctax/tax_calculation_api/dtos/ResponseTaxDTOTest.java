@@ -14,7 +14,6 @@ class ResponseTaxDTOTest {
 
         ResponseTaxDTO dto = new ResponseTaxDTO(1L, "IR", "Imposto sobre renda", BigDecimal.valueOf(15));
 
-
         assertEquals(1L, dto.getTaxId());
         assertEquals("IR", dto.getName());
         assertEquals("Imposto sobre renda", dto.getDescription());

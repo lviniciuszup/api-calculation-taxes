@@ -17,8 +17,6 @@ class ResponseUserDTOTest {
         Set<Role> roles = Set.of(role);
 
         ResponseUserDTO dto = new ResponseUserDTO(1L, "userTest", roles);
-
-
         assertEquals(1L, dto.getId());
         assertEquals("userTest", dto.getUsername());
         assertEquals(roles, dto.getRoles());
