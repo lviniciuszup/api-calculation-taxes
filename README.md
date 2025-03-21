@@ -62,7 +62,7 @@ A autenticação é feita pelo **JWT**. Para acessar os endpoints, siga os passo
 {
 "username": "admin",
 "password": "123456",
-"role": ["ADMIN"]
+"roles": ["ADMIN"]
 }
 ```
 2. **Faça login**:
@@ -87,7 +87,47 @@ Authorization: Bearer <seu-token>
 
 ### Exemplos de Endpoints
 
-#### **1. Listar Tipos de Impostos**
+
+#### **1. Criar um Tipo de Imposto**
+- **Método**: `POST`
+- **URL**: `/taxes/tipos`
+- **Payload**:
+```json
+{
+  "name": "IR",
+  "description": "Imposto sobre renda",
+  "aliquot": 10.0
+}
+```
+- **Resposta**:
+```json
+{
+"id": 3,
+"name": "IR",
+"description": "Imposto sobre renda",
+"aliquot": 10.0
+}
+```
+#### **2. Calcular Imposto**
+- **Método**: `POST`
+- **URL**: `/taxes/calculo`
+- **Payload**:
+```json
+{
+"taxId": 1,
+"baseValue": 1000.0
+}
+```
+- **Resposta**:
+```json
+{
+"taxName": "ICMS",
+"baseValue": 1000.0,
+"rate": 18.0,
+"calculatedValue": 180.0
+}
+```
+#### **3. Listar todos os Tipos de Impostos**
 - **Método**: `GET`
 - **URL**: `/taxes/tipos`
 - **Resposta**:
@@ -106,43 +146,19 @@ Authorization: Bearer <seu-token>
 ]
 ```
 
-#### **2. Adicionar Tipo de Imposto**
-- **Método**: `POST`
-- **URL**: `/taxes/tipos`
-- **Payload**:
-```json
-{
-"name": "IPI",
-"rate": 10.0
-}
-```
+#### **2. Listar Impostos por ID**
+- **Método**: `GET`
+- **URL**: `/taxes/tipos/1`
 - **Resposta**:
 ```json
+[
 {
-"id": 3,
-"name": "IPI",
-"rate": 10.0
+"id": 1,
+"name": "IR",
+"description": "Imposto sobre renda",
+"aliquot": 15.0
 }
-```
 
-#### **3. Calcular Imposto**
-- **Método**: `POST`
-- **URL**: `/taxes/calculo`
-- **Payload**:
-```json
-{
-"taxId": 1,
-"baseValue": 1000.0
-}
-```
-- **Resposta**:
-```json
-{
-"taxName": "ICMS",
-"baseValue": 1000.0,
-"rate": 18.0,
-"calculatedValue": 180.0
-}
 ```
 
 ## 🛡️ **Segurança**
