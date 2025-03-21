@@ -11,13 +11,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Set;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -39,10 +39,9 @@ class UserControllerTest {
     void newUser() throws Exception {
         Role role = new Role(1L, "ADMIN");
         Set<Role> roles = Set.of(role);
-        RegisterUserDTO registerUserDTO = new RegisterUserDTO("userTest", "123456", Set.of("ADMIN"));
         ResponseUserDTO responseUserDTO = new ResponseUserDTO(1L, "userTest", roles);
 
-        when(userServices.registerUser(registerUserDTO)).thenReturn(responseUserDTO);
+        when(userServices.registerUser(any(RegisterUserDTO.class))).thenReturn(responseUserDTO);
 
         String requestRegisterUserTest = """
                 {
@@ -64,10 +63,8 @@ class UserControllerTest {
 
     @Test
     void loginUser() throws Exception {
-            LoginUserDTO loginUserDTO = new LoginUserDTO("userTest", "123456");
             String token = "token";
-
-            when(userServices.loginUser(loginUserDTO)).thenReturn(token);
+        when(userServices.loginUser(any(LoginUserDTO.class))).thenReturn(token);
 
         String requestLoginUserTest = """
               {
