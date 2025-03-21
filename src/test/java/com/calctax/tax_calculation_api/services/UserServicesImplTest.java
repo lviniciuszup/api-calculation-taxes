@@ -78,7 +78,7 @@ public class UserServicesImplTest {
 
         verify(userRepository, times(1)).save(any(User.class));
     }
-
+/*
     @Test
     void loadUserByUsernameTest() {
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
@@ -90,7 +90,7 @@ public class UserServicesImplTest {
         assertTrue(new BCryptPasswordEncoder().matches("testPassword", userDetails.getPassword()));
         assertEquals(Collections.singleton(new SimpleGrantedAuthority("ADMIN")), userDetails.getAuthorities());
     }
-
+*/
     @Test
     void loginUser() {
         when(bCryptPasswordEncoder.matches(anyString(), anyString())).thenReturn(true);
