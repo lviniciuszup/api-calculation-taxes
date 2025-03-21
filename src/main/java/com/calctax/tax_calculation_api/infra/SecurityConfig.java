@@ -16,7 +16,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
@@ -28,9 +27,9 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/user/register", "/user/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/taxes/tipos", "/taxes/calculo").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/taxes/tipos", "/taxes/tipos/{id}").permitAll()
-                        .requestMatchers(HttpMethod.DELETE,"/taxes/tipos/{id}").permitAll().anyRequest().authenticated() //.hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/taxes/tipos", "/taxes/calculo").permitAll() //.hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/taxes/tipos", "/taxes/tipos/{id}").permitAll() //.authenticated()
+                        .requestMatchers(HttpMethod.DELETE,"/taxes/tipos/{id}").permitAll().anyRequest().authenticated()
                 );
         http.csrf(AbstractHttpConfigurer::disable);
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
