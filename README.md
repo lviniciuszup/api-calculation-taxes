@@ -16,7 +16,7 @@ API de Gerenciamento de Impostos! Projeto desenvolvido para gerenciar tipos de i
 
 ### **Autenticação e Autorização**
 - Autenticação baseada em **JWT**.
-- Controle de acesso por **roles** (`ROLE_ADMIN`, `ROLE_USER`).
+- Controle de acesso por **roles** (`ADMIN`, `USER`).
 - Endpoints protegidos para diferentes níveis de acesso.
 
 ### **Gerenciamento de Impostos**
