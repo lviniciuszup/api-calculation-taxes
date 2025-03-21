@@ -7,6 +7,7 @@ import com.calctax.tax_calculation_api.dtos.ResponseTaxDTO;
 import com.calctax.tax_calculation_api.services.TaxServices;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/taxes")
 public class TaxController {
-    private final TaxServices taxServices;
+
+    private TaxServices taxServices;
 
     @PostMapping("/tipos")
     public ResponseEntity<ResponseTaxDTO> createTax(@RequestBody @Valid RegisterTaxDTO registerTaxDTO){
