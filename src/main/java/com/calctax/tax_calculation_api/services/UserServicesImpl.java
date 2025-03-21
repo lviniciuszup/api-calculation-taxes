@@ -25,12 +25,18 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
-public class UserServicesImpl implements UserServices, UserDetailsService {
+public class UserServicesImpl implements UserServices {
     private RoleRepository roleRepository;
     private UserRepository userRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private JwtUtil jwtUtil;
+
+    public UserServicesImpl(RoleRepository roleRepository, UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, JwtUtil jwtUtil) {
+        this.roleRepository = roleRepository;
+        this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.jwtUtil = jwtUtil;
+    }
 
     public ResponseUserDTO registerUser(RegisterUserDTO registerUserDTO) {
         String username = registerUserDTO.getUsername();
@@ -63,15 +69,6 @@ public class UserServicesImpl implements UserServices, UserDetailsService {
                 registeredUser.getRoles()
         );
     }
-
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado " +username));
-
-        List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
-        }
 
         public String loginUser(LoginUserDTO loginUserDTO){
             Optional<User> existingUser = userRepository.findByUsername(loginUserDTO.getUsername());
