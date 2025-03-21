@@ -5,7 +5,6 @@ import com.calctax.tax_calculation_api.dtos.RegisterUserDTO;
 import com.calctax.tax_calculation_api.dtos.ResponseUserDTO;
 import com.calctax.tax_calculation_api.services.UserServices;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

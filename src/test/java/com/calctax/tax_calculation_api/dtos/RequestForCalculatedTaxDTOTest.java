@@ -13,7 +13,7 @@ class RequestForCalculatedTaxDTOTest {
         RequestForCalculatedTaxDTO dto = new RequestForCalculatedTaxDTO(1L, BigDecimal.valueOf(15));
 
         assertEquals(1L, dto.getTaxId());
-        assertEquals(15, dto.getBaseValue());
+        assertEquals(15, dto.getBaseValue().intValue());
 
     }
 

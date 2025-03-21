@@ -6,6 +6,7 @@ import com.calctax.tax_calculation_api.exceptions.NotFoundException;
 import com.calctax.tax_calculation_api.models.Tax;
 import com.calctax.tax_calculation_api.repositories.TaxRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -13,8 +14,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class TaxServicesImpl implements TaxServices {
+    @Autowired
     private TaxRepository taxRepository;
 
     public ResponseTaxDTO registerTax(RegisterTaxDTO registerTaxDTO){

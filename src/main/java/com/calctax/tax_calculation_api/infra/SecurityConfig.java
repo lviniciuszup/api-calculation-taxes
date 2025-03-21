@@ -27,9 +27,9 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/user/register", "/user/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/taxes/tipos", "/taxes/calculo").permitAll() //.hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET,"/taxes/tipos", "/taxes/tipos/{id}").permitAll() //.authenticated()
-                        .requestMatchers(HttpMethod.DELETE,"/taxes/tipos/{id}").permitAll().anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.POST, "/taxes/tipos", "/taxes/calculo").authenticated()
+                        .requestMatchers(HttpMethod.GET,"/taxes/tipos", "/taxes/tipos/{id}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE,"/taxes/tipos/{id}").authenticated()
                 );
         http.csrf(AbstractHttpConfigurer::disable);
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
