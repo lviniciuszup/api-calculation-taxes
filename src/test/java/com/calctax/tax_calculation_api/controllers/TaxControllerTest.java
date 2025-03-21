@@ -14,9 +14,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.springframework.http.MediaType;
@@ -39,10 +40,9 @@ class TaxControllerTest {
 
     @Test
     void createTax() throws Exception {
-        RegisterTaxDTO registerTaxDTO = new RegisterTaxDTO("IR", "Imposto sobre renda", BigDecimal.valueOf(15));
         ResponseTaxDTO responseTaxDTO = new ResponseTaxDTO(1L, "IR", "Imposto sobre renda", BigDecimal.valueOf(15));
 
-        when(taxServices.registerTax(registerTaxDTO)).thenReturn(responseTaxDTO);
+        doReturn(responseTaxDTO).when(taxServices).registerTax(any(RegisterTaxDTO.class));
 
         String requestRegisterTaxTest = """
                 {
@@ -65,10 +65,10 @@ class TaxControllerTest {
 
     @Test
     void calculateTax() throws Exception {
-        RequestForCalculatedTaxDTO requestForCalculatedTaxDTO = new RequestForCalculatedTaxDTO(1L, BigDecimal.valueOf(1000));
+
         CalculatedTaxDTO calculatedTaxDTO = new CalculatedTaxDTO("IR", BigDecimal.valueOf(1000), BigDecimal.valueOf(15), BigDecimal.valueOf(150));
 
-        when(taxServices.calculatedTax(requestForCalculatedTaxDTO)).thenReturn(calculatedTaxDTO);
+        when(taxServices.calculatedTax(any(RequestForCalculatedTaxDTO.class))).thenReturn(calculatedTaxDTO);
 
         String newRequestForCalculatedTax = """
                 {
