@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    private final UserServices userServices;
+    private UserServices userServices;
 
     @PostMapping("/register")
     public ResponseEntity<ResponseUserDTO> newUser(@RequestBody @Valid RegisterUserDTO registerUserDTO){
