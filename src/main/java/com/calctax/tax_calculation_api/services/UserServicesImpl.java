@@ -49,12 +49,10 @@ public class UserServicesImpl implements UserServices, UserDetailsService {
                     if (!roleRepository.existsByName(roleNameWithPrefix)) {
                         roleRepository.save(role);
                    }
-
                     return roleRepository.findByName(roleNameWithPrefix)
                             .orElseThrow(() -> new NotFoundException("Esta role não encontrada: " + roleNameWithPrefix));
                 })
                 .collect(Collectors.toSet());
-
 
         User user = new User(username, encodedPassword, roles);
         User registeredUser = userRepository.save(user);
