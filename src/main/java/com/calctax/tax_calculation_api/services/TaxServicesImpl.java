@@ -3,11 +3,9 @@ package com.calctax.tax_calculation_api.services;
 import com.calctax.tax_calculation_api.dtos.*;
 import com.calctax.tax_calculation_api.exceptions.DuplicateException;
 import com.calctax.tax_calculation_api.exceptions.NotFoundException;
-import com.calctax.tax_calculation_api.infra.JwtUtil;
 import com.calctax.tax_calculation_api.models.Tax;
 import com.calctax.tax_calculation_api.repositories.TaxRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -17,9 +15,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class TaxServicesImpl implements TaxServices {
-    private final TaxRepository taxRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final JwtUtil jwtUtil;
+    private TaxRepository taxRepository;
 
     public ResponseTaxDTO registerTax(RegisterTaxDTO registerTaxDTO){
         String taxName = registerTaxDTO.getName();
@@ -57,8 +53,6 @@ public class TaxServicesImpl implements TaxServices {
             throw new NotFoundException("Imposto não encontrado para o ID "+taxId+" fornecido!");
         }
         Tax tax = taxOpt.get();
-
-
 
         BigDecimal baseValue = requestForCalculatedTaxDTO.getBaseValue();
         BigDecimal aliquot = tax.getAliquot();
