@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_tax
+    environment:
+      POSTGRES_DB: tax_calculator
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d tax_calculator"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - podman
+
+  app:
+    build: .
+    container_name: app_tax
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_tax:5432/tax_calculator
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=admin
+    networks:
+      - podman
+
+volumes:
+  pgdata:
+
+networks:
+  podman:
+    external: true
